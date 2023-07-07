@@ -39,6 +39,7 @@ CLASS zcl_svss_new_abap IMPLEMENTATION.
         ( field1 = 2 field2 = 'B' ) ).
 
 * 4) Usar for para llemar tablas internas
+* blog: https://blogs.sap.com/2017/11/08/for-expression-in-abap-7.40-best-case-scenarios/
     DATA(lt_target1) = VALUE gtt_struct2(
         FOR lwa_source IN lt_source ( CORRESPONDING #( lwa_source ) ) ).
 
