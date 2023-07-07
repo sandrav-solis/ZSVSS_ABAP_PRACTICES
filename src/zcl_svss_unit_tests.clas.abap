@@ -17,8 +17,5 @@ CLASS zcl_svss_unit_tests IMPLEMENTATION.
        INTO TABLE @DATA(it_travel).
     ENDDO.
 
-   loop at it_travel ASSIGNING FIELD-SYMBOL(<fs_travel>).
-   ENDLOOP.
-
   ENDMETHOD.
 ENDCLASS.
