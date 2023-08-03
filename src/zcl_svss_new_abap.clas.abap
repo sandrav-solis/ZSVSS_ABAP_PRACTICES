@@ -51,20 +51,68 @@ CLASS zcl_svss_new_abap IMPLEMENTATION.
      FOR wa_travel IN it_travel_bd WHERE ( agency_id = '070001' ) ( CORRESPONDING #( wa_travel ) ) ).
 
 * 8)TYPE REF TO DATA pag 222
-        DATA: bopf_monster_header_records TYPE STANDARD TABLE OF zdlc_travel_001,
-          header_record_reference     TYPE REF TO data.
+    DATA: it_Travel8           TYPE STANDARD TABLE OF zdlc_travel_001,
+          it_Travel_aux        TYPE STANDARD TABLE OF zdlc_travel_001,
+          wa_travel_reference8 TYPE REF TO data.
 
     SELECT * FROM zdlc_travel_001
-    INTO TABLE @bopf_monster_header_records.
+    INTO TABLE @it_Travel8.
 
-    LOOP AT bopf_monster_header_records INTO DATA(bopf_monster_header_record).
+    LOOP AT it_Travel8 INTO DATA(wa_travel8).
       "After 7.4
-      header_record_reference = REF #( bopf_monster_header_record ).
+      wa_travel_reference8 = REF #( wa_travel8 ).
 
       IF sy-subrc = 0.
       ENDIF.
     ENDLOOP.
 
+* 9) switch
+    DATA: vl_cond   TYPE i,
+          vl_result TYPE char30.
+
+    vl_cond = sy-datum+6(1).
+
+    "ejemplo case.
+    CASE vl_cond.
+      WHEN 1.
+        vl_result = 'read'.
+      WHEN 2.
+        vl_result = 'modify'.
+      WHEN 3.
+        vl_result = 'delete'.
+    ENDCASE.
+
+    "en su lugar: menos líneas de cóodigo.
+    vl_result = SWITCH string( vl_cond
+      WHEN 1 THEN 'read'
+      WHEN 2 THEN 'modify'
+      WHEN 3 THEN 'delete' ).
+
+    " Si no tenemos variable y queremos mostrar mensaje:
+    vl_result = SWITCH string( vl_cond
+    WHEN 1 THEN 'read'
+    WHEN 2 THEN 'modify'
+    WHEN 3 THEN 'delete' ).
+
+    "con las consultas:
+*    LOOP AT lt_vbpa ASSIGNING FIELD-SYMBOL(<ls_vbpa>).
+*      INSERT VALUE #(
+*      vbeln = <ls_vbpa>-vbeln
+*      parvw = <ls_vbpa>-parvw
+*      kunde = SWITCH #( <ls_vbpa>-parvw
+*      WHEN 'AG' OR 'WE' OR 'RG' OR 'RE'
+*      THEN <ls_vbpa>-kunnr
+*      ELSE '00' && <ls_vbpa>-pernr )
+*      adrnr = <ls_vbpa>-adrnr )
+*      INTO TABLE gt_vakpa.
+*    ENDLOOP
+
+
+* 10) COND reemplaza IF/ELSE y también al CASE
+       vl_result = COND string(
+       WHEN vl_cond = 1 THEN 'read'
+       WHEN vl_cond = 2 THEN 'modify'
+       WHEN vl_cond = 3 THEN 'delete' ).
 
   ENDMETHOD.
 ENDCLASS.
